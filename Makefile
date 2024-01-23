@@ -13,10 +13,10 @@ clean: clean-custom
 	${RM} $(LINKOBJ) $(BIN)
 
 bars: bars.o fancyTerminal.o
-	$(CC) obj/bars.o obj/fancyTerminal.o -o bars
+	$(CC) obj/bars.o obj/fancyTerminal.o -o output/bars
 
 pong: pong.o fancyTerminal.o
-	$(CC) obj/pong.o obj/fancyTerminal.o -o pong
+	$(CC) obj/pong.o obj/fancyTerminal.o -o output/pong
 
 bars.o: bars.c
 	$(CC) -c bars.c -o obj/bars.o $(CFLAGS)
@@ -29,3 +29,4 @@ fancyTerminal.o: fancyTerminal.c
 
 makedir:
 	mkdir -p obj
+	mkdir -p output
