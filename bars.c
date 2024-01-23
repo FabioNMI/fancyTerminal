@@ -4,12 +4,12 @@
 
 void init()
 {
-  clearTerminal();
+  clearTerminalScreen();
 }
 
 void exitTerminal()
 {
-  resetColors();
+  resetTerminalColors();
 }
 
 int main () 
