@@ -1,22 +1,25 @@
+/*
+  A simple Pong game demonstrating the fancy terminal library!
+  Author: Fabio Pereira
+  Author: Fabio Pereira
+  Date: January, 22nd, 2024
+  Visit my Youtube channel: https://www.youtube.com/@non_maskable_interrupt
+  Or my blog: https://embeddedsystems.io/  
+*/
+
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "fancyTerminal.h"
-#ifdef __gnu_linux__
-#include <termios.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <time.h>
-#define millis() ((uint32_t)clock()/1000)
-#include <stdlib.h>
-#endif
+#include "fancyTerminal.h"
 
 const int8_t courtSizeX = 40;
 const int8_t courtSizeY = 15;
 const int8_t paddleSize = 2;
 const uint32_t ballUpdateIntervalms = 150;
-struct termios original_term, new_term;
+
 typedef struct
 {
     int8_t posX;
@@ -35,79 +38,41 @@ typedef struct
     bool endGame;    
 } sPongGame;
 
-// Platform dependent code
-void initInput(void);
-void processInput(sPongGame * game);
-void exitTerminal(void);
-
-void initInput(void)
-{
-#ifdef __gnu_linux__
-    // Set terminal to non-canonical mode
-    tcgetattr(STDIN_FILENO, &original_term);
-    new_term = original_term;
-    new_term.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_term);
-
-    // Set file descriptor to non-blocking
-    int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
-    fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-#else
-
-#endif    
-}
-
 void processInput(sPongGame * game)
 {
-    int8_t oldPaddlePos[2];
-    oldPaddlePos[0] = game->paddlePos[0];
-    oldPaddlePos[1] = game->paddlePos[1];
-#ifdef __gnu_linux__
-    char str[3];
-    ssize_t bytesRead = read(STDIN_FILENO, &str, 3);
-    if (bytesRead >= 1)
+  int8_t oldPaddlePos[2];
+  oldPaddlePos[0] = game->paddlePos[0];
+  oldPaddlePos[1] = game->paddlePos[1];
+
+  termInputResult key = readTerminalInput();
+  switch (key.key) {
+    case KEY_STD:
+      switch (key.stdKey) {
+        case 'q' : game->endGame = true; break;
+        case 'w' : game->paddlePos[1]--; break;
+        case 's' : game->paddlePos[1]++; break;
+        case ' ' : game->start = true; game->playing = true; break;
+      }
+      break;
+    case KEY_UP : game->paddlePos[0]--; break;
+    case KEY_DOWN : game->paddlePos[0]++; break;
+  }
+
+  for (int x = 0; x <= 1; x++)
+  {
+    if (oldPaddlePos[x] != game->paddlePos[x])
     {
-        switch (str[0])
-        {
-            case 'q' : game->endGame = true; break;
-            case 'w' : game->paddlePos[1]--; break;
-            case 's' : game->paddlePos[1]++; break;
-            case ' ' : game->start = true; game->playing = true; break;
-            case '\x1b':
-                if (str[1] == '[')
-                {
-                    switch (str[2])
-                    {
-                        case 'A' : game->paddlePos[0]--; break;
-                        case 'B' : game->paddlePos[0]++; break;
-                    }
-                }
-                break;
-        }
+      if (game->paddlePos[x] < paddleSize + 1) game->paddlePos[x] = paddleSize + 1;
+      if (game->paddlePos[x] > courtSizeY-1) game->paddlePos[x] = courtSizeY-1;
     }
-#else
-    
-#endif
-    for (int x = 0; x <= 1; x++)
-    {
-        if (oldPaddlePos[x] != game->paddlePos[x])
-        {
-            if (game->paddlePos[x] < paddleSize + 1) game->paddlePos[x] = paddleSize + 1;
-            if (game->paddlePos[x] > courtSizeY-1) game->paddlePos[x] = courtSizeY-1;
-        }
-    }   
+  }   
 }
 
 void exitTerminal(void)
 {
-    resetColors();
+    resetTerminalColors();
     setCursorXY(1,courtSizeY+1);
-#ifdef __gnu_linux__
-    // Restore the terminal to its previous configuration
-    tcsetattr(STDIN_FILENO, TCSANOW, &original_term);
-    // Exit the application
-    exit(0);
-#endif
+    deInitTerminal();
 }
 
 // Platform independent code
@@ -207,8 +172,8 @@ void drawPaddles(sPongGame * game)
 
 void init()
 {
-    initInput();
-    clearTerminal();
+    initTerminalInput();
+    clearTerminalScreen();
     drawCourt();
 }
 
