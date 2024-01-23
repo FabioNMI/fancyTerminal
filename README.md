@@ -5,5 +5,5 @@ It is designed to be portable and extensible, I hope you enjoy!
 
 Fabio
 
-https://www.youtube.com/@non_maskable_interrupt
-https://embeddedsystems.io
+Youtube channel: https://www.youtube.com/@non_maskable_interrupt
+Blog: https://embeddedsystems.io
