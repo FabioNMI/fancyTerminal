@@ -4,43 +4,43 @@
     Author: Fabio Pereira
     Date: January, 22nd, 2024
     Visit my Youtube channel: https://www.youtube.com/@non_maskable_interrupt
-    Or my blog: https://embeddedsystems.io/
+    And my blog: https://embeddedsystems.io/
 */
 
 #ifndef __FANCYTERMINAL
 #define __FANCYTERMINAL
 
 typedef enum {
-  CL_BLACK,
-  CL_RED,
-  CL_GREEN,
-  CL_YELLOW,
-  CL_BLUE,
-  CL_MAGENTA,
-  CL_CYAN,
-  CL_WHITE,
-  CL_DEFAULT
+    CL_BLACK,
+    CL_RED,
+    CL_GREEN,
+    CL_YELLOW,
+    CL_BLUE,
+    CL_MAGENTA,
+    CL_CYAN,
+    CL_WHITE,
+    CL_DEFAULT
 } termColor;
 
 typedef enum {
-  KEY_NONE,   // no key pressed
-  KEY_STD,    // the value returned is a standard keyboard key
-  KEY_UP,
-  KEY_DOWN,
-  KEY_LEFT,
-  KEY_RIGHT,
-  KEY_END,
-  KEY_KEYPAD5,
-  KEY_HOME,
-  KEY_F1,
-  KEY_F2,
-  KEY_F3,
-  KEY_F4
+    KEY_NONE,   // no key pressed
+    KEY_STD,    // the value returned is a standard keyboard key
+    KEY_UP,
+    KEY_DOWN,
+    KEY_LEFT,
+    KEY_RIGHT,
+    KEY_END,
+    KEY_KEYPAD5,
+    KEY_HOME,
+    KEY_F1,
+    KEY_F2,
+    KEY_F3,
+    KEY_F4
 } termKey;
 
 typedef struct {
-  termKey key;
-  char stdKey;
+    termKey key;
+    char stdKey;
 } termInputResult;
 
 void clearTerminalScreen(void);
@@ -59,7 +59,6 @@ termInputResult readTerminalInput(void);
 // We are using variadic macro parameters
 #define OUTPUT(...) printf(__VA_ARGS__)
 #define FLUSH(x) fflush(x)
-#define millis() ((uint32_t)clock()/1000)
 #else
 #define OUTPUT(...) Serial.print(__VA_ARGS__)
 #define FLUSH(x) 
