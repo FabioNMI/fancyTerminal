@@ -21,7 +21,6 @@
 
 #endif
 
-
 const int8_t courtSizeX = 40;
 const int8_t courtSizeY = 15;
 const int8_t paddleSize = 2;
@@ -81,10 +80,17 @@ void processInput(sPongGame * game) {
     }   
 }
 
+void init() {
+    initTerminalInput();
+    clearTerminalScreen();
+    setCursorInvisible();
+}
+
 void exitTerminal(void) {
-    resetTerminalColors();
     setCursorXY(1,courtSizeY+1);
-    deInitTerminal();
+    deInitTerminalInput();
+    resetTerminalColors();
+    setCursorVisible();
 }
 
 void drawCourt() {
@@ -181,30 +187,24 @@ void drawPaddles(sPongGame * game) {
     static int previous1 = -1;
     if (game->paddlePos[0] != previous0) {
         // we only need to update the paddle if it moved
-        // First we erase the previous paddle
+        // first we erase the previous paddle
         if (previous1 != -1) drawVerticalLine(2, previous0, paddleSize, ' ');
-        // Now we draw the new one
+        // now we draw the new one
         setFGColor(CL_RED);
         drawVerticalLine(2, game->paddlePos[0], paddleSize, player1Char);  
     }
     if (game->paddlePos[1] != previous1) {
         // we only need to update the paddle if it moved
-        // First we erase the previous paddle
+        // first we erase the previous paddle
         if (previous1 != -1) drawVerticalLine(courtSizeX-1, previous1, paddleSize, ' ');
-        // Now we draw the new one
+        // now we draw the new one
         setFGColor(CL_GREEN);
         drawVerticalLine(courtSizeX-1, game->paddlePos[1], paddleSize, player2Char);
     }    
     previous0 = game->paddlePos[0];
     previous1 = game->paddlePos[1];
-    // Blink Press Space to Start until the players start
+    // blink Press Space to Start until the players start
     blinkStart(game);
-}
-
-void init() {
-    initTerminalInput();
-    clearTerminalScreen();
-    drawCourt();
 }
 
 void checkBallCollision(sPongGame * game) {
@@ -289,6 +289,7 @@ int main () {
     game.paddlePos[1] = ((courtSizeY - paddleSize) >> 1) + (paddleSize);
     game.nextBallUpdatems = 0;
     init();
+    drawCourt();
     while (1) {
         drawPaddles(&game);
         processInput(&game);

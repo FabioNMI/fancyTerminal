@@ -12,52 +12,50 @@
 struct termios original_term, new_term;
 #endif
 
-void clearTerminalScreen()
-{
+void clearTerminalScreen(void) {
     OUTPUT("\x1B[2J");
+}
+
+void setCursorInvisible(void) {
     OUTPUT("\x1B[?25l");
 }
 
-void setFGColor(termColor color)
-{
+void setCursorVisible(void) {
+    OUTPUT("\x1B[?25h");
+}
+
+void setFGColor(termColor color) {
     OUTPUT("\x1B[3%um",color);
 }
 
-void setBGColor(termColor color)
-{
+void setBGColor(termColor color) {
     OUTPUT("\x1B[4%um",color);
 }
 
-void resetTerminalColors()
-{
+void resetTerminalColors() {
     OUTPUT("\x1B[0m");
 }
 
-void setCursorXY(uint8_t x, uint8_t y)
-{
+void setCursorXY(uint8_t x, uint8_t y) {
     OUTPUT("\x1B[%hu;%huH",y,x);
 }
 
-void printCharXY(uint8_t x, uint8_t y, char ch)
-{
+void printCharXY(uint8_t x, uint8_t y, char ch) {
     setCursorXY(x,y);
     OUTPUT("%c",ch);
     FLUSH(stdout);
 }
 
-void drawHorizontalLine(int x, int y, int width, char ch)
-{
+void drawHorizontalLine(int x, int y, int width, char ch) {
     for (int tx = x; tx < (x+width); tx++) printCharXY(tx,y,ch);
 }
 
-void drawVerticalLine(int x, int y, int height, char ch)
-{
+void drawVerticalLine(int x, int y, int height, char ch) {
     // The line moves towards the origin
     for (int ty = y; ty > (y-height); ty--) printCharXY(x,ty,ch);
 }
 
-void initTerminalInput(void)
-{
+void initTerminalInput(void) {
 #ifdef __gnu_linux__
     // Set terminal to non-canonical mode
     tcgetattr(STDIN_FILENO, &original_term);
@@ -72,7 +70,7 @@ void initTerminalInput(void)
 #endif    
 }
 
-void deInitTerminal(void) {
+void deInitTerminalInput(void) {
 #ifdef __gnu_linux__
     // Restore the terminal to its previous configuration
     tcsetattr(STDIN_FILENO, TCSANOW, &original_term);

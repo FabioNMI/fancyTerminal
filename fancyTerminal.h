@@ -44,6 +44,8 @@ typedef struct {
 } termInputResult;
 
 void clearTerminalScreen(void);
+void setCursorInvisible(void);
+void setCursorVisible(void);
 void setFGColor(termColor color);
 void setBGColor(termColor color);
 void resetTerminalColors(void);
@@ -52,7 +54,7 @@ void printCharXY(uint8_t x, uint8_t y, char ch);
 void drawHorizontalLine(int x, int y, int width, char ch);
 void drawVerticalLine(int x, int y, int height, char ch);
 void initTerminalInput(void);
-void deInitTerminal(void);
+void deInitTerminalInput(void);
 termInputResult readTerminalInput(void);
 
 #ifdef __gnu_linux__
