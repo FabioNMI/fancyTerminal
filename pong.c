@@ -129,10 +129,10 @@ void updateScores(sPongGame * game) {
 #endif
     setCursorXY((courtSizeX>>1)-7,(courtSizeY>>1)-1);
     if (game->scorePlayer[0] == maxScore) {
-        OUTPUT("Player 1 wins!");
+        terminalOutput("Player 1 wins!");
         game->endGame = true;
     } else if (game->scorePlayer[1] == maxScore) {
-        OUTPUT("Player 2 wins!");
+        terminalOutput("Player 2 wins!");
         game->endGame = true;
     }
 }
@@ -156,15 +156,15 @@ void blinkStart(sPongGame * game) {
         if (currentTime >= game->nextBallUpdatems) {
             setCursorXY((courtSizeX >> 1)-15,3);
             setFGColor(CL_YELLOW);
-            OUTPUT("Console Pong by Fabio Pereira!");
+            terminalOutput("Console Pong by Fabio Pereira!");
             if (!game->playing) {
                 setCursorXY((courtSizeX >> 1)-11,5);
                 setFGColor(CL_YELLOW);
-                OUTPUT("Press Space to Start!");
+                terminalOutput("Press Space to Start!");
             } else {
                 eraseOpeningText(game->start);
             }
-            FLUSH(stdout);
+            terminalFlush();
             // reuse playing variable for controlling blinking (while start is false)
             game->playing = !game->playing;
             // reuse ball update timer for blinking the text

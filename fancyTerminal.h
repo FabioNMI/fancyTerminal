@@ -59,11 +59,11 @@ termInputResult readTerminalInput(void);
 
 #ifdef __gnu_linux__
 // We are using variadic macro parameters
-#define OUTPUT(...) printf(__VA_ARGS__)
-#define FLUSH(x) fflush(x)
+#define terminalOutput(...) printf(__VA_ARGS__)
+#define terminalFlush() fflush(stdout)
 #else
-#define OUTPUT(...) Serial.print(__VA_ARGS__)
-#define FLUSH(x) 
+#define terminalOutput(...) Serial.print(__VA_ARGS__)
+#define terminalFlush() 
 #endif
 
 #endif

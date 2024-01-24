@@ -13,37 +13,37 @@ struct termios original_term, new_term;
 #endif
 
 void clearTerminalScreen(void) {
-    OUTPUT("\x1B[2J");
+    terminalOutput("\x1B[2J");
 }
 
 void setCursorInvisible(void) {
-    OUTPUT("\x1B[?25l");
+    terminalOutput("\x1B[?25l");
 }
 
 void setCursorVisible(void) {
-    OUTPUT("\x1B[?25h");
+    terminalOutput("\x1B[?25h");
 }
 
 void setFGColor(termColor color) {
-    OUTPUT("\x1B[3%um",color);
+    terminalOutput("\x1B[3%um",color);
 }
 
 void setBGColor(termColor color) {
-    OUTPUT("\x1B[4%um",color);
+    terminalOutput("\x1B[4%um",color);
 }
 
 void resetTerminalColors() {
-    OUTPUT("\x1B[0m");
+    terminalOutput("\x1B[0m");
 }
 
 void setCursorXY(uint8_t x, uint8_t y) {
-    OUTPUT("\x1B[%hu;%huH",y,x);
+    terminalOutput("\x1B[%hu;%huH",y,x);
 }
 
 void printCharXY(uint8_t x, uint8_t y, char ch) {
     setCursorXY(x,y);
-    OUTPUT("%c",ch);
-    FLUSH(stdout);
+    terminalOutput("%c",ch);
+    terminalFlush();
 }
 
 void drawHorizontalLine(int x, int y, int width, char ch) {
