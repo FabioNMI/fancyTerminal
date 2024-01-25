@@ -61,9 +61,9 @@ termInputResult readTerminalInput(void);
 // We are using variadic macro parameters
 #define terminalOutput(...) printf(__VA_ARGS__)
 #define terminalFlush() fflush(stdout)
-#else
+#elif ARDUINO
 #define terminalOutput(...) Serial.print(__VA_ARGS__)
-#define terminalFlush() 
+#define terminalFlush() Serial.flush()
 #endif
 
 #endif

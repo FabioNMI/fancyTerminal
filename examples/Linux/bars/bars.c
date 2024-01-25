@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "fancyTerminal.h"
+#include "../../../src/fancyTerminal.h"
 
 void init()
 {

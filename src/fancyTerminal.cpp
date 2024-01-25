@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
+#elif ARDUINO
+#include <Arduino.h>
 #endif
 #include "fancyTerminal.h"
 
@@ -25,11 +27,23 @@ void setCursorVisible(void) {
 }
 
 void setFGColor(termColor color) {
+#ifdef __gnu_linux__
     terminalOutput("\x1B[3%um",color);
+#else
+    terminalOutput("\x1B[3");
+    terminalOutput(color);
+    terminalOutput('m');
+#endif
 }
 
 void setBGColor(termColor color) {
+#ifdef __gnu_linux__
     terminalOutput("\x1B[4%um",color);
+#else
+    terminalOutput("\x1B[4");
+    terminalOutput(color);
+    terminalOutput('m');
+#endif    
 }
 
 void resetTerminalColors() {
@@ -37,12 +51,24 @@ void resetTerminalColors() {
 }
 
 void setCursorXY(uint8_t x, uint8_t y) {
+#ifdef __gnu_linux__
     terminalOutput("\x1B[%hu;%huH",y,x);
+#else
+    terminalOutput("\x1B[");
+    terminalOutput(y);
+    terminalOutput(';');
+    terminalOutput(x);
+    terminalOutput('H');
+#endif    
 }
 
 void printCharXY(uint8_t x, uint8_t y, char ch) {
     setCursorXY(x,y);
+#ifdef __gnu_linux__
     terminalOutput("%c",ch);
+#else
+    terminalOutput(ch);
+#endif
     terminalFlush();
 }
 
@@ -66,7 +92,8 @@ void initTerminalInput(void) {
     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
 #else
-
+    Serial.begin(115200);
+    Serial.setTimeout(50);
 #endif    
 }
 
@@ -82,9 +109,12 @@ void deInitTerminalInput(void) {
 termInputResult readTerminalInput(void) {
     termInputResult result;
     result.key = KEY_NONE;
-#ifdef __gnu_linux__
     char str[4];
+#ifdef __gnu_linux__
     ssize_t bytesRead = read(STDIN_FILENO, &str, 4);
+#else
+    size_t bytesRead = Serial.readBytes(str,4);;
+#endif
     if (bytesRead >= 1) {
         if (str[0] == '\x1b') {
             if (str[1] == '[') {
@@ -110,8 +140,5 @@ termInputResult readTerminalInput(void) {
             result.stdKey = str[0];
         }
     }
-#else
-    
-#endif
     return result;
 }

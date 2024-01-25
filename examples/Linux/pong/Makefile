@@ -1,7 +1,7 @@
 CC       = gcc
 OBJ      = pong.o fancyTerminal.o
-LINKOBJ  = obj/pong.o obj/fancyTerminal.o obj/bars.o
-BIN      = pong bars
+LINKOBJ  = obj/pong.o obj/fancyTerminal.o
+BIN      = pong
 CFLAGS   = -g3
 RM       = rm -f
 
@@ -12,20 +12,14 @@ all: makedir $(BIN)
 clean: clean-custom
 	${RM} $(LINKOBJ) $(BIN)
 
-bars: bars.o fancyTerminal.o
-	$(CC) obj/bars.o obj/fancyTerminal.o -o output/bars
-
 pong: pong.o fancyTerminal.o
 	$(CC) obj/pong.o obj/fancyTerminal.o -o output/pong
-
-bars.o: bars.c
-	$(CC) -c bars.c -o obj/bars.o $(CFLAGS)
 
 pong.o: pong.c
 	$(CC) -c pong.c -o obj/pong.o $(CFLAGS)
 
-fancyTerminal.o: fancyTerminal.c
-	$(CC) -c fancyTerminal.c -o obj/fancyTerminal.o $(CFLAGS)
+fancyTerminal.o: ../../../src/fancyTerminal.cpp
+	$(CC) -x c -c ../../../src/fancyTerminal.cpp -o obj/fancyTerminal.o $(CFLAGS)
 
 makedir:
 	mkdir -p obj
