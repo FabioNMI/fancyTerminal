@@ -1,0 +1,19 @@
+termColor               KEYWORD1
+termKey                 KEYWORD1
+termInputResult         KEYWORD1
+
+clearTerminalScreen     KEYWORD2
+setCursorInvisible      KEYWORD2
+setCursorVisible        KEYWORD2
+setFGColor              KEYWORD2
+setBGColor              KEYWORD2
+resetTerminalColors     KEYWORD2
+setCursorXY             KEYWORD2
+printCharXY             KEYWORD2
+drawHorizontalLine      KEYWORD2
+drawVerticalLine        KEYWORD2
+initTerminalInput       KEYWORD2
+deInitTerminalInput     KEYWORD2
+readTerminalInput       KEYWORD2
+terminalOutput          KEYWORD2
+terminalFlush           KEYWORD2
