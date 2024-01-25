@@ -1,4 +1,4 @@
-This is a fancy terminal designed to make use of ANSY terminal escape codes and help beautify your
+This is a fancy terminal designed to make use of ANSI terminal escape codes and help beautify your
 console applications!
 
 It is designed to be portable and extensible, I hope you enjoy!
