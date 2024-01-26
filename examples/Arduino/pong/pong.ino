@@ -9,12 +9,6 @@
 
 #include "fancyTerminal.h"
 
-#ifdef __gnu_linux__
-#define millis() ((uint32_t)clock()/1000)
-#else
-
-#endif
-
 const int8_t courtSizeX = 40;
 const int8_t courtSizeY = 15;
 const int8_t paddleSize = 2;
@@ -115,15 +109,9 @@ void updateScores(sPongGame * game) {
     // print player score
     setCursorXY(courtSizeX>>2,1);
     setFGColor(CL_MAGENTA);
-#ifdef __gnu_linux__
-    printf("%u",game->scorePlayer[0]);
-    setCursorXY((courtSizeX>>2)*3,1);
-    printf("%u",game->scorePlayer[1]);
-#else
     Serial.print(game->scorePlayer[0]);
     setCursorXY((courtSizeX>>2)*3,1);
     Serial.print(game->scorePlayer[1]);
-#endif
     setCursorXY((courtSizeX>>1)-7,(courtSizeY>>1)-1);
     if (game->scorePlayer[0] == maxScore) {
         terminalOutput("Player 1 wins!");
@@ -161,7 +149,6 @@ void blinkStart(sPongGame * game) {
             } else {
                 eraseOpeningText(game->start);
             }
-            //terminalFlush(stdout);
             // reuse playing variable for controlling blinking (while start is false)
             game->playing = !game->playing;
             // reuse ball update timer for blinking the text
@@ -280,7 +267,8 @@ void processBall(sPongGame * game) {
 }
 
 void setup() {
-
+    terminalInit();
+    drawCourt();
 }
 
 void loop () {
@@ -288,9 +276,6 @@ void loop () {
     memset(&game, 0, sizeof(sPongGame));
     game.paddlePos[0] = ((courtSizeY - paddleSize) >> 1) + (paddleSize);
     game.paddlePos[1] = ((courtSizeY - paddleSize) >> 1) + (paddleSize);
-    game.nextBallUpdatems = 0;
-    terminalInit();
-    drawCourt();
     while (1) {
         drawPaddles(&game);
         processInput(&game);
