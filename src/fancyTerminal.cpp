@@ -92,7 +92,6 @@ void initTerminalInput(void) {
     int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
     fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
 #else
-    Serial.begin(115200);
     Serial.setTimeout(50);
 #endif    
 }
