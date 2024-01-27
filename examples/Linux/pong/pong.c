@@ -1,7 +1,6 @@
 /*
   A simple Pong game demonstrating the fancy terminal library!
   Author: Fabio Pereira
-  Author: Fabio Pereira
   Date: January, 22nd, 2024
   Visit my Youtube channel: https://www.youtube.com/@non_maskable_interrupt
   And my blog: https://embeddedsystems.io/  
