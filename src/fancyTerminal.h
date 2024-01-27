@@ -46,13 +46,14 @@ typedef struct {
 void clearTerminalScreen(void);
 void setCursorInvisible(void);
 void setCursorVisible(void);
+void ringBell(void);
 void setFGColor(termColor color);
 void setBGColor(termColor color);
 void resetTerminalColors(void);
 void setCursorXY(uint8_t x, uint8_t y);
 void printCharXY(uint8_t x, uint8_t y, char ch);
-void drawHorizontalLine(int x, int y, int width, char ch);
-void drawVerticalLine(int x, int y, int height, char ch);
+void drawHorizontalLine(int x, int y, int x2, int ch);
+void drawVerticalLine(int x, int y, int y2, int ch);
 void initTerminalInput(void);
 void deInitTerminalInput(void);
 termInputResult readTerminalInput(void);

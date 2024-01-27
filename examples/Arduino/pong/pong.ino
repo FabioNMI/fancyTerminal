@@ -24,6 +24,8 @@ const char player2Char = '[';
 const char horizontalCourtChar = '-';
 const char verticalCourtChar = '|';
 const char netChar = ':';
+const char str1[] = "Console Pong by Fabio Pereira!";
+const char str2[] = "Press Space to Start!";
 
 typedef struct {
     int8_t posX;
@@ -61,7 +63,7 @@ void processInput(sPongGame * game) {
 
     for (int x = 0; x <= 1; x++) {
         if (oldPaddlePos[x] != game->paddlePos[x]) {
-            if (game->paddlePos[x] < paddleSize + 1) game->paddlePos[x] = paddleSize + 1;
+            if (game->paddlePos[x] < paddleSize) game->paddlePos[x] = paddleSize;
             if (game->paddlePos[x] > courtSizeY-1) game->paddlePos[x] = courtSizeY-1;
         }
     }   
@@ -74,7 +76,7 @@ void terminalInit() {
 }
 
 void exitTerminal(void) {
-    setCursorXY(1,courtSizeY+1);
+    setCursorXY(1,courtSizeY+2);
     deInitTerminalInput();
     resetTerminalColors();
     setCursorVisible();
@@ -82,26 +84,17 @@ void exitTerminal(void) {
 
 void drawCourt() {
     setFGColor(courtColor);
-    drawHorizontalLine(1,1,courtSizeX,horizontalCourtChar);
-    for (int ty = 2; ty < courtSizeY; ty++) {
-        printCharXY(1,ty,verticalCourtChar);
-        printCharXY(courtSizeX,ty,verticalCourtChar);
-    }
-    drawHorizontalLine(1,courtSizeY,courtSizeX,horizontalCourtChar);
+    drawHorizontalLine(1,1,courtSizeX+1,horizontalCourtChar);
+    drawVerticalLine(1,2,courtSizeY+1,verticalCourtChar);
+    drawVerticalLine(courtSizeX,2,courtSizeY+1,verticalCourtChar);
+    drawHorizontalLine(1,courtSizeY+1,courtSizeX+1,horizontalCourtChar);
     setFGColor(netColor);
-    for (int ty = 2; ty < courtSizeY; ty++) {
-        printCharXY(courtSizeX >> 1,ty,netChar);
-    }
-}
-
-void drawPaddle(int px, int py, char ch) {
-    printCharXY(px,py,ch);
-    printCharXY(px,py+1,ch);
+    drawVerticalLine(courtSizeX >> 1,2,courtSizeY+1,netChar);
 }
 
 void moveBallToCenter(sPongGame * game) {
     game->ball.posX = courtSizeX >> 1;
-    game->ball.posY = courtSizeY >> 1;
+    game->ball.posY = (courtSizeY >> 1)+1;
 }
 
 void updateScores(sPongGame * game) {
@@ -123,9 +116,13 @@ void updateScores(sPongGame * game) {
 
 void eraseOpeningText(bool all) {
     setFGColor(netColor);
-    drawHorizontalLine((courtSizeX >> 1)-11, 5, 22, ' ');
+    int size = strlen(str2);
+    int start = (courtSizeX-size)>>1;
+    drawHorizontalLine(start, 5, start+size, ' ');
     if (all) {
-        drawHorizontalLine((courtSizeX >> 1)-15, 3, 31, ' ');
+        size = strlen(str1);
+        start = (courtSizeX-size)>>1;
+        drawHorizontalLine(start, 3, start+size, ' ');
         
         printCharXY(courtSizeX >> 1,3,netChar);
     }
@@ -138,13 +135,13 @@ void blinkStart(sPongGame * game) {
     if (!game->start) {
         uint32_t currentTime = millis();
         if (currentTime >= game->nextBallUpdatems) {
-            setCursorXY((courtSizeX >> 1)-15,3);
+            setCursorXY(courtSizeX-strlen(str1)>>1,3);
             setFGColor(CL_YELLOW);
-            terminalOutput("Console Pong by Fabio Pereira!");
+            terminalOutput(str1);
             if (!game->playing) {
-                setCursorXY((courtSizeX >> 1)-11,5);
+                setCursorXY(courtSizeX-strlen(str2)>>1,5);
                 setFGColor(CL_YELLOW);
-                terminalOutput("Press Space to Start!");
+                terminalOutput(str2);
             } else {
                 eraseOpeningText(game->start);
             }
@@ -171,18 +168,18 @@ void drawPaddles(sPongGame * game) {
     if (game->paddlePos[0] != previous0) {
         // we only need to update the paddle if it moved
         // first we erase the previous paddle
-        if (previous1 != -1) drawVerticalLine(2, previous0, paddleSize, ' ');
+        if (previous1 != -1) drawVerticalLine(2, previous0, previous0+paddleSize, ' ');
         // now we draw the new one
         setFGColor(CL_RED);
-        drawVerticalLine(2, game->paddlePos[0], paddleSize, player1Char);  
+        drawVerticalLine(2, game->paddlePos[0], game->paddlePos[0]+paddleSize, player1Char);  
     }
     if (game->paddlePos[1] != previous1) {
         // we only need to update the paddle if it moved
         // first we erase the previous paddle
-        if (previous1 != -1) drawVerticalLine(courtSizeX-1, previous1, paddleSize, ' ');
+        if (previous1 != -1) drawVerticalLine(courtSizeX-1, previous1, previous1+paddleSize, ' ');
         // now we draw the new one
         setFGColor(CL_GREEN);
-        drawVerticalLine(courtSizeX-1, game->paddlePos[1], paddleSize, player2Char);
+        drawVerticalLine(courtSizeX-1, game->paddlePos[1], game->paddlePos[1]+paddleSize, player2Char);
     }    
     previous0 = game->paddlePos[0];
     previous1 = game->paddlePos[1];
@@ -193,12 +190,13 @@ void drawPaddles(sPongGame * game) {
 void checkBallCollision(sPongGame * game) {
     if (game->ball.posX == 2) {
         // check if the ball hit the paddle of player 1 or not
-        if (game->ball.posY >= (game->paddlePos[0] - paddleSize) && game->ball.posY <= game->paddlePos[0]) {
+        if (game->ball.posY >= game->paddlePos[0]  && game->ball.posY < game->paddlePos[0] + paddleSize) {
             // we had a collision with the paddle, reverse X axis
             game->ball.dirX = -game->ball.dirX;
             game->ball.posX += game->ball.dirX;
             // randomize Y direction
             game->ball.dirY = (random() % 3) - 1;
+            ringBell();
         } else {
             // player missed the ball, player 2 scored
             game->scorePlayer[1]++;
@@ -208,12 +206,13 @@ void checkBallCollision(sPongGame * game) {
         }
     } else if (game->ball.posX == courtSizeX-1) {
         // check if the ball hit the paddle or not
-        if (game->ball.posY >= (game->paddlePos[1] - paddleSize) && game->ball.posY <= game->paddlePos[1]) {
+        if (game->ball.posY >= game->paddlePos[1] && game->ball.posY < game->paddlePos[1] + paddleSize) {
             // we had a collision with the paddle, reverse X axis
             game->ball.dirX = -game->ball.dirX;
             game->ball.posX += game->ball.dirX;
             // randomize Y direction
-            game->ball.dirY = (random() % 3) - 1;            
+            game->ball.dirY = (random() % 3) - 1;
+            ringBell();           
         } else {
             // player missed the ball, the other player scored
             game->scorePlayer[0]++;
@@ -222,7 +221,7 @@ void checkBallCollision(sPongGame * game) {
             game->playing = false; 
         }               
     }
-    if (game->ball.posY == 1 || game->ball.posY == courtSizeY) {
+    if (game->ball.posY == 1 || game->ball.posY >= courtSizeY+1) {
         // the ball hit a wall
         game->ball.dirY = -game->ball.dirY;
         game->ball.posY += game->ball.dirY;
@@ -238,10 +237,10 @@ void processBall(sPongGame * game) {
             game->ball.posY += game->ball.dirY;
             checkBallCollision(game);
             // update ball on screen
-            if (previousBall.posX != game->ball.posX || previousBall.posY != game->ball.posY) {
+            if (previousBall.posX != 0 && (previousBall.posX != game->ball.posX || previousBall.posY != game->ball.posY)) {
                 // The ball moved, compute new ball position
                 // First erase previous ball position
-                char ch = ' ';
+                int ch = ' ';
                 if (previousBall.posX == courtSizeX >> 1) {
                     // if the ball was on the net, redraw the net
                     setFGColor(netColor);
@@ -250,7 +249,7 @@ void processBall(sPongGame * game) {
                 printCharXY(previousBall.posX, previousBall.posY, ch);
                 // now draw the ball
                 setFGColor(ballColor);
-                printCharXY(game->ball.posX, game->ball.posY, ballChar);
+                printCharXY(game->ball.posX, game->ball.posY, ballChar);                 
             }
             game->nextBallUpdatems = currentTime + ballUpdateIntervalms;
             previousBall.posX = game->ball.posX;
