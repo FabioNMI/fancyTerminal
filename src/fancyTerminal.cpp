@@ -76,13 +76,13 @@ void printCharXY(uint8_t x, uint8_t y, char ch) {
     terminalFlush();
 }
 
-void drawHorizontalLine(int x, int y, int x2, int ch) {
+void drawHorizontalLine(int x, int y, int x2, char ch) {
     int dir = 1;
     if (x2 < x) dir = -1;
     for (int tx = x; tx != x2; tx += dir) printCharXY(tx,y,ch);
 }
 
-void drawVerticalLine(int x, int y, int y2, int ch) {
+void drawVerticalLine(int x, int y, int y2, char ch) {
     int dir = 1;
     if (y2 < y) dir = -1;
     for (int ty = y; ty != y2; ty += dir) printCharXY(x,ty,ch);
