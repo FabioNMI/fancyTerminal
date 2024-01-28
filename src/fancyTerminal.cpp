@@ -82,7 +82,7 @@ void drawHorizontalLine(int x, int y, int x2, char ch) {
     if (x2 < x) dir = -1;
     for (tx = x; tx != x2; tx += dir) printCharXY(tx,y,ch);
     // Since we don't print the last char in the loop above, print it now
-    printCharXY(tx,y,ch);
+    //printCharXY(tx,y,ch);
 }
 
 void drawVerticalLine(int x, int y, int y2, char ch) {
@@ -91,7 +91,7 @@ void drawVerticalLine(int x, int y, int y2, char ch) {
     if (y2 < y) dir = -1;
     for (ty = y; ty != y2; ty += dir) printCharXY(x,ty,ch);
     // Since we don't print the last char in the loop above, print it now
-    printCharXY(x,ty,ch);
+    //printCharXY(x,ty,ch);
 }
 
 void drawRect(int x1, int y1, int x2, int y2, char ch) {
@@ -134,28 +134,29 @@ termInputResult readTerminalInput(void) {
     result.key = KEY_NONE;
     char str[4];
 #ifdef __gnu_linux__
-    ssize_t bytesRead = read(STDIN_FILENO, &str, 4);
+    ssize_t bytesRead = read(STDIN_FILENO, str, 4);
 #else
-    size_t bytesRead = Serial.readBytes(str,4);;
+    size_t bytesRead = Serial.readBytes(str,4);
 #endif
     if (bytesRead >= 1) {
         if (str[0] == '\x1b') {
             if (str[1] == '[') {
                 switch (str[2]) {
-                case 'A' : result.key = KEY_UP; break;
-                case 'B' : result.key = KEY_DOWN; break;
-                case 'C' : result.key = KEY_RIGHT; break;
-                case 'D' : result.key = KEY_LEFT; break;
-                case 'F' : result.key = KEY_END; break;
-                case 'G' : result.key = KEY_KEYPAD5; break;
-                case 'H' : result.key = KEY_HOME; break;
-                case '1' :
-                    switch (str[3]) {
-                    case 'P' : result.key = KEY_F1; break;
-                    case 'Q' : result.key = KEY_F2; break;
-                    case 'R' : result.key = KEY_F3; break;
-                    case 'S' : result.key = KEY_F4; break;
-                    }
+                    case 'A' : result.key = KEY_UP; break;
+                    case 'B' : result.key = KEY_DOWN; break;
+                    case 'C' : result.key = KEY_RIGHT; break;
+                    case 'D' : result.key = KEY_LEFT; break;
+                    case 'F' : result.key = KEY_END; break;
+                    case 'G' : result.key = KEY_KEYPAD5; break;
+                    case 'H' : result.key = KEY_HOME; break;
+                    case '1' :
+                        switch (str[3]) {
+                            case 'P' : result.key = KEY_F1; break;
+                            case 'Q' : result.key = KEY_F2; break;
+                            case 'R' : result.key = KEY_F3; break;
+                            case 'S' : result.key = KEY_F4; break;
+                        }
+                        break;
                 }
             }      
         } else {
