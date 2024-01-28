@@ -54,6 +54,8 @@ void setCursorXY(uint8_t x, uint8_t y);
 void printCharXY(uint8_t x, uint8_t y, char ch);
 void drawHorizontalLine(int x, int y, int x2, char ch);
 void drawVerticalLine(int x, int y, int y2, char ch);
+void drawRect(int x1, int y1, int x2, int y2, char ch);
+void fillRect(int x1, int y1, int x2, int y2, char ch);
 void initTerminalInput(void);
 void deInitTerminalInput(void);
 termInputResult readTerminalInput(void);

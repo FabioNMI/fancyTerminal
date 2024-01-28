@@ -77,15 +77,32 @@ void printCharXY(uint8_t x, uint8_t y, char ch) {
 }
 
 void drawHorizontalLine(int x, int y, int x2, char ch) {
+    int tx;
     int dir = 1;
     if (x2 < x) dir = -1;
-    for (int tx = x; tx != x2; tx += dir) printCharXY(tx,y,ch);
+    for (tx = x; tx != x2; tx += dir) printCharXY(tx,y,ch);
+    // Since we don't print the last char in the loop above, print it now
+    printCharXY(tx,y,ch);
 }
 
 void drawVerticalLine(int x, int y, int y2, char ch) {
+    int ty;
     int dir = 1;
     if (y2 < y) dir = -1;
-    for (int ty = y; ty != y2; ty += dir) printCharXY(x,ty,ch);
+    for (ty = y; ty != y2; ty += dir) printCharXY(x,ty,ch);
+    // Since we don't print the last char in the loop above, print it now
+    printCharXY(x,ty,ch);
+}
+
+void drawRect(int x1, int y1, int x2, int y2, char ch) {
+    drawHorizontalLine(x1, y1, x2, ch);
+    drawHorizontalLine(x1, y2, x2, ch);
+    drawVerticalLine(x1, y1, y2, ch);
+    drawVerticalLine(x2, y1, y2, ch);
+}
+
+void fillRect(int x1, int y1, int x2, int y2, char ch) {
+    for (int ty = y1; ty <= y2; ty++) drawHorizontalLine(x1, ty, x2, ch);
 }
 
 void initTerminalInput(void) {
