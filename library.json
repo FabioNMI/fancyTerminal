@@ -1,6 +1,6 @@
 {
     "name": "FancyTerminal",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "keywords": "Serial, Terminal, ANSI",
     "description": "A simple ANSI terminal library to enhance and beautify console handling!",
     "authors":

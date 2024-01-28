@@ -1,5 +1,10 @@
 /*
   An example of a simple human-machine interface on Arduino using the fancy terminal!
+  Expects:
+  - analog inputs connected to A0 and A1
+  - Push-button connected to D6
+  - LED connected to D4
+  Tested on Seeed Studio's Grove Beginner Kit for Arduino
   Author: Fabio Pereira
   Date: January, 27nd, 2024
   Visit my Youtube channel: https://www.youtube.com/@non_maskable_interrupt
