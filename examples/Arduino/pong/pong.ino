@@ -266,6 +266,7 @@ void processBall(sPongGame * game) {
 
 void setup() {
     Serial.begin(115200);
+    while (!Serial);
     terminalInit();
     drawCourt();
 }

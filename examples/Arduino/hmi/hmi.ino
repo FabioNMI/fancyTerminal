@@ -180,6 +180,7 @@ void doScreenUpdate() {
 
 void setup() {
     Serial.begin(115200);
+    while (!Serial);
     pinMode(keyPin,INPUT_PULLUP);
     pinMode(LEDPin, OUTPUT);
     digitalWrite(LEDPin, LOW);
